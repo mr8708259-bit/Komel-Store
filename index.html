@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🛍️ ShopVerse - Online Store</title>
+    <style>
+        /* ───────────── RESET & BASE ───────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f4f6f9;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        input,
+        select,
+        textarea {
+            font-size: 1rem;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+            transition: border 0.2s;
+            width: 100%;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #6366f1;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* ───────────── SCROLLBAR ───────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 20px;
+        }
+
+        /* ───────────── HEADER / NAV ───────────── */
+        header {
+            background: #ffffff;
+            padding: 14px 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            font-weight: 300;
+            -webkit-text-fill-color: #94a3b8;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-links a,
+        .nav-links button {
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: transparent;
+            color: #475569;
+            transition: 0.2s;
+        }
+        .nav-links a:hover,
+        .nav-links button:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .nav-links .active-link {
+            background: #6366f1;
+            color: #fff !important;
+        }
+        .nav-links .active-link:hover {
+            background: #4f46e5;
+        }
+        .cart-badge {
+            position: relative;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 2px;
+        }
+        .user-greeting {
+            font-weight: 600;
+            color: #6366f1;
+            font-size: 0.9rem;
+            margin-right: 4px;
+        }
+
+        /* ───────────── MAIN CONTAINER ───────────── */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* ───────────── PAGES (show/hide) ───────────── */
+        .page {
+            display: none;
+            animation: fadeUp 0.35s ease;
+        }
+        .page.active-page {
+            display: block;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ───────────── HERO ───────────── */
+        .hero {
+            text-align: center;
+            padding: 40px 0 30px;
+        }
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e293b, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 560px;
+            margin: 12px auto 0;
+        }
+
+        /* ───────────── PRODUCT GRID ───────────── */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 18px 16px 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+            transition: 0.25s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f1f5f9;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(99, 102, 241, 0.12);
+            border-color: #c7d2fe;
+        }
+        .product-card .img-placeholder {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 300;
+            color: #818cf8;
+            margin-bottom: 12px;
+        }
+        .product-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .product-card .category {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .product-card .price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin: 8px 0 12px;
+        }
+        .product-card .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+            flex-wrap: wrap;
+        }
+        .product-card .actions button {
+            flex: 1;
+            padding: 9px 0;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            background: #6366f1;
+            color: #fff;
+            min-width: 70px;
+        }
+        .product-card .actions button:hover {
+            background: #4f46e5;
+            transform: scale(1.02);
+        }
+        .product-card .actions .btn-outline {
+            background: transparent;
+            color: #6366f1;
+            border: 2px solid #6366f1;
+        }
+        .product-card .actions .btn-outline:hover {
+            background: #6366f1;
+            color: #fff;
+        }
+        .product-card .stock-badge {
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 30px;
+            background: #dcfce7;
+            color: #16a34a;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+            align-self: flex-start;
+        }
+        .product-card .stock-badge.out {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* ───────────── FILTERS ───────────── */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin: 16px 0 8px;
+        }
+        .filters select,
+        .filters input {
+            width: auto;
+            min-width: 150px;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: #fff;
+            border: 2px solid #e2e8f0;
+        }
+        .filters .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 180px;
+        }
+        .filters .search-wrap input {
+            padding-left: 38px;
+            border-radius: 30px;
+        }
+        .filters .search-wrap .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* ───────────── CARDS (cart / admin) ───────────── */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 24px 28px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f1f5f9;
+            margin-bottom: 24px;
+        }
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #94a3b8;
+        }
+
+        /* ───────────── TABLE ───────────── */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            text-align: left;
+            padding: 12px 10px;
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        tr:hover td {
+            background: #fafbff;
+        }
+        .badge {
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-success {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        .badge-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        .badge-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .btn-sm {
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #4f46e5;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        .btn-outline-sm {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+        }
+        .btn-outline-sm:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        /* ───────────── AUTH FORMS ───────────── */
+        .auth-box {
+            max-width: 420px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 32px 30px;
+            border-radius: 24px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1f5f9;
+        }
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .auth-box .form-group {
+            margin-bottom: 16px;
+        }
+        .auth-box label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 4px;
+            color: #475569;
+        }
+        .auth-box .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+        .auth-box .switch-link {
+            text-align: center;
+            margin-top: 14px;
+            color: #64748b;
+        }
+        .auth-box .switch-link a {
+            color: #6366f1;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .auth-box .switch-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ───────────── CART ITEMS ───────────── */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .cart-item .info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 2;
+            min-width: 180px;
+        }
+        .cart-item .info .name {
+            font-weight: 600;
+        }
+        .cart-item .info .price {
+            color: #6366f1;
+            font-weight: 700;
+        }
+        .cart-item .qty {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-item .qty button {
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            background: #f1f5f9;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #1e293b;
+        }
+        .cart-item .qty button:hover {
+            background: #e2e8f0;
+        }
+        .cart-item .qty span {
+            font-weight: 700;
+            min-width: 28px;
+            text-align: center;
+        }
+        .cart-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: right;
+            padding-top: 16px;
+            border-top: 2px dashed #e2e8f0;
+            margin-top: 8px;
+        }
+
+        /* ───────────── ADMIN ───────────── */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .admin-tabs button {
+            padding: 10px 22px;
+            border-radius: 30px;
+            background: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .admin-tabs button.active-tab {
+            background: #6366f1;
+            color: #fff;
+        }
+        .admin-tabs button:hover:not(.active-tab) {
+            background: #e2e8f0;
+        }
+        .admin-section {
+            display: none;
+        }
+        .admin-section.active-section {
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .form-row .full {
+            grid-column: 1 / -1;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .form-row .full {
+                grid-column: 1;
+            }
+        }
+
+        /* ───────────── EMPTY STATE ───────────── */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #94a3b8;
+        }
+        .empty-state .icon {
+            font-size: 3.6rem;
+            margin-bottom: 12px;
+        }
+        .empty-state h3 {
+            color: #475569;
+            font-size: 1.2rem;
+        }
+
+        /* ───────────── TOAST ───────────── */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+            width: 100%;
+        }
+        .toast {
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #6366f1;
+        }
+        .toast.success {
+            border-left-color: #22c55e;
+        }
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ───────────── RESPONSIVE ───────────── */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-links {
+                justify-content: center;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+            .card {
+                padding: 18px 14px;
+            }
+            .auth-box {
+                padding: 24px 18px;
+            }
+            .cart-item .info {
+                flex: 1;
+                min-width: 120px;
+            }
+            .admin-tabs button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .toast-container {
+                right: 16px;
+                bottom: 16px;
+                max-width: 300px;
+            }
+        }
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .product-card {
+                padding: 12px 10px;
+            }
+            .product-card h3 {
+                font-size: 0.9rem;
+            }
+            .product-card .price {
+                font-size: 1rem;
+            }
+            .product-card .actions button {
+                font-size: 0.7rem;
+                padding: 6px 0;
+            }
+        }
+
+        /* ───────────── MISC ───────────── */
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        .fw-700 {
+            font-weight: 700;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .inline-flex {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── HEADER ─── -->
+    <header>
+        <div class="logo">Shop<span>Verse</span></div>
+        <div class="nav-links" id="navLinks">
+            <a href="#" class="active-link" data-page="home">🏠 Home</a>
+            <a href="#" data-page="cart">🛒 Cart <span class="cart-badge" id="cartCount">0</span></a>
+            <a href="#" data-page="admin" id="adminNavLink" style="display:none;">⚙️ Admin</a>
+            <span class="user-greeting" id="userGreeting"></span>
+            <button id="loginBtn" data-page="login">🔑 Login</button>
+            <button id="registerBtn" data-page="register">📝 Register</button>
+            <button id="logoutBtn" style="display:none; background:#fee2e2; color:#dc2626;">Logout</button>
+        </div>
+    </header>
+
+    <!-- ─── TOAST CONTAINER ─── -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ─── MAIN ─── -->
+    <div class="container">
+
+        <!-- ===== HOME PAGE ===== -->
+        <div class="page active-page" id="page-home">
+            <div class="hero">
+                <h1>Discover Amazing Products</h1>
+                <p>Quality items at the best prices. Shop with confidence.</p>
+            </div>
+
+            <div class="filters">
+                <div class="search-wrap">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search products..." />
+                </div>
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="home">Home & Living</option>
+                    <option value="beauty">Beauty</option>
+                    <option value="sports">Sports</option>
+                </select>
+                <select id="sortFilter">
+                    <option value="default">Sort by</option>
+                    <option value="price-low">Price: Low → High</option>
+                    <option value="price-high">Price: High → Low</option>
+                    <option value="name">Name A → Z</option>
+                </select>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <!-- ===== CART PAGE ===== -->
+        <div class="page" id="page-cart">
+            <div class="card">
+                <h2>🛒 Your Cart <small id="cartItemCount">(0 items)</small></h2>
+                <div id="cartItemsContainer">
+                    <div class="empty-state">
+                        <div class="icon">🛍️</div>
+                        <h3>Your cart is empty</h3>
+                        <p class="text-muted">Start adding some awesome products!</p>
+                    </div>
+                </div>
+                <div id="cartTotalContainer" style="display:none;">
+                    <div class="cart-total">Total: <span id="cartTotalPrice">₹0.00</span></div>
+                    <div class="flex-between mt-12">
+                        <button class="btn-danger btn-sm" id="clearCartBtn">🗑️ Clear Cart</button>
+                        <button class="btn-success" id="checkoutBtn" style="padding:10px 32px;border-radius:30px;font-size:1rem;">✅ Proceed to Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ADMIN PAGE ===== -->
+        <div class="page" id="page-admin">
+            <div class="card">
+                <h2>⚙️ Admin Panel</h2>
+                <div class="admin-tabs">
+                    <button class="active-tab" data-tab="products">📦 Products</button>
+                    <button data-tab="orders">📋 Orders</button>
+                    <button data-tab="users">👥 Users</button>
+                    <button data-tab="add-product">➕ Add Product</button>
+                </div>
+
+                <!-- Products -->
+                <div class="admin-section active-section" id="admin-products">
+                    <div class="flex-between mb-8">
+                        <span class="text-muted">Manage your product catalog</span>
+                        <button class="btn-primary btn-sm" id="adminAddProductBtn">➕ Add New</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>#</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                            <tbody id="adminProductTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Orders -->
+                <div class="admin-section" id="admin-orders">
+                    <h3 style="margin-bottom:12px;">All Orders</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Order ID</th><th>User</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+                            <tbody id="adminOrderTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users -->
+                <div class="admin-section" id="admin-users">
+                    <h3 style="margin-bottom:12px;">Registered Users</h3>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>#</th><th>Username</th><th>Email</th><th>Joined</th></tr></thead>
+                            <tbody id="adminUserTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Add Product -->
+                <div class="admin-section" id="admin-add-product">
+                    <h3>➕ Add New Product</h3>
+                    <form id="addProductForm" style="margin-top:14px;">
+                        <div class="form-row">
+                            <div class="full">
+                                <label>Product Name *</label>
+                                <input type="text" id="prodName" required />
+                            </div>
+                            <div>
+                                <label>Category *</label>
+                                <select id="prodCategory" required>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="clothing">Clothing</option>
+                                    <option value="home">Home & Living</option>
+                                    <option value="beauty">Beauty</option>
+                                    <option value="sports">Sports</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Price (₹) *</label>
+                                <input type="number" id="prodPrice" step="0.01" required />
+                            </div>
+                            <div>
+                                <label>Stock *</label>
+                                <input type="number" id="prodStock" required />
+                            </div>
+                            <div class="full">
+                                <label>Description</label>
+                                <textarea id="prodDesc" rows="2" placeholder="Brief description..."></textarea>
+                            </div>
+                            <div class="full">
+                                <label>Image Emoji / Icon</label>
+                                <input type="text" id="prodIcon" placeholder="e.g. 📱, 👕, 🏠" value="📦" />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-success" style="padding:12px 40px;border-radius:30px;font-size:1rem;margin-top:6px;">➕ Add Product</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== LOGIN PAGE ===== -->
+        <div class="page" id="page-login">
+            <div class="auth-box">
+                <h2>🔐 Login</h2>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Username or Email</label>
+                        <input type="text" id="loginIdentifier" placeholder="Enter username or email" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password" required />
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                </form>
+                <div class="switch-link">
+                    Don't have an account? <a id="switchToRegister">Register here</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== REGISTER PAGE ===== -->
+        <div class="page" id="page-register">
+            <div class="auth-box">
+                <h2>📝 Register</h2>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label>Username *</label>
+                        <input type="text" id="regUsername" placeholder="Choose a username" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="regEmail" placeholder="Enter your email" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" id="regPassword" placeholder="Min 6 characters" required minlength="6" />
+                    </div>
+                    <button type="submit" class="btn-primary">Create Account</button>
+                </form>
+                <div class="switch-link">
+                    Already have an account? <a id="switchToLogin">Login here</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ─── FOOTER ─── -->
+    <footer style="text-align:center;padding:20px;color:#94a3b8;font-size:0.85rem;border-top:1px solid #f1f5f9;background:#fff;margin-top:20px;">
+        © 2026 ShopVerse — Built with ❤️
+    </footer>
+
+    <script>
+        // ════════════════════════════════════════════════════════════════
+        //  BACKEND API BASE URL - 🔥 FIXED FOR RENDER
+        // ════════════════════════════════════════════════════════════════
+        const API_BASE = 'https://shopverse-backend-1gf5.onrender.com/api';
+
+        // ─── HELPER: Fetch with auth token ───
+        function getAuthHeaders() {
+            const token = sessionStorage.getItem('shopverse_token');
+            return {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            };
+        }
+
+        // ─── TOAST ───
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(40px)';
+                setTimeout(() => toast.remove(), 350);
+            }, 3000);
+        }
+
+        // ─── AUTH STATE ───
+        let currentUser = null;
+
+        function getCurrentUser() {
+            const saved = sessionStorage.getItem('shopverse_user');
+            if (saved) {
+                try {
+                    currentUser = JSON.parse(saved);
+                    return currentUser;
+                } catch (_) { /* ignore */ }
+            }
+            return null;
+        }
+
+        function setCurrentUser(user) {
+            currentUser = user;
+            if (user) {
+                sessionStorage.setItem('shopverse_user', JSON.stringify(user));
+            } else {
+                sessionStorage.removeItem('shopverse_user');
+                sessionStorage.removeItem('shopverse_token');
+            }
+            updateUI();
+        }
+
+        // ─── CART (still in localStorage for speed, but synced with backend at checkout) ───
+        const CART_KEY = 'shopverse_cart';
+
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            } catch (_) { return []; }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        }
+
+        function getCartCount() {
+            return getCart().reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        function getCartTotal() {
+            return getCart().reduce((sum, item) => sum + (item.price * item.qty), 0);
+        }
+
+        function formatPrice(amount) {
+            return '₹' + Number(amount).toFixed(2);
+        }
+
+        // ─── PRODUCTS (fetched from backend) ───
+        let allProducts = [];
+
+        async function fetchProducts() {
+            try {
+                const res = await fetch(`${API_BASE}/products`);
+                if (!res.ok) throw new Error('Failed to fetch products');
+                allProducts = await res.json();
+                return allProducts;
+            } catch (err) {
+                showToast('Error loading products from database', 'error');
+                console.error(err);
+                return [];
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  RENDER FUNCTIONS
+        // ════════════════════════════════════════════════════════════════
+
+        async function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const category = document.getElementById('categoryFilter').value;
+            const sort = document.getElementById('sortFilter').value;
+
+            // Fetch fresh products from DB
+            const products = await fetchProducts();
+            if (products.length === 0 && allProducts.length === 0) {
+                grid.innerHTML =
+                    `<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📦</div><h3>No products in database</h3><p class="text-muted">Add some products via the admin panel.</p></div>`;
+                return;
+            }
+
+            let filtered = products.filter(p => {
+                const name = p.NAME || p.name || '';
+                const desc = p.DESCRIPTION || p.description || '';
+                const matchSearch = name.toLowerCase().includes(search) || desc.toLowerCase().includes(search);
+                const matchCat = category === 'all' || (p.CATEGORY || p.category) === category;
+                return matchSearch && matchCat;
+            });
+
+            if (sort === 'price-low') filtered.sort((a, b) => (a.PRICE || a.price) - (b.PRICE || b.price));
+            else if (sort === 'price-high') filtered.sort((a, b) => (b.PRICE || b.price) - (a.PRICE || a.price));
+            else if (sort === 'name') filtered.sort((a, b) => (a.NAME || a.name).localeCompare(b.NAME || b.name));
+
+            if (filtered.length === 0) {
+                grid.innerHTML =
+                    `<div class="empty-state" style="grid-column:1/-1;"><div class="icon">🔍</div><h3>No products found</h3><p class="text-muted">Try adjusting your filters.</p></div>`;
+                return;
+            }
+
+            const cart = getCart();
+            grid.innerHTML = filtered.map(p => {
+                const id = p.ID || p.id;
+                const name = p.NAME || p.name;
+                const categoryVal = p.CATEGORY || p.category;
+                const price = p.PRICE || p.price;
+                const stock = p.STOCK || p.stock || 0;
+                const description = p.DESCRIPTION || p.description || '';
+                const icon = p.ICON || p.icon || '📦';
+
+                const inCart = cart.find(c => c.productId === id);
+                const qty = inCart ? inCart.qty : 0;
+                const stockClass = stock > 0 ? '' : 'out';
+                const stockText = stock > 0 ? `In Stock (${stock})` : 'Out of Stock';
+                return `
+                    <div class="product-card">
+                        <div class="img-placeholder">${icon}</div>
+                        <h3>${name}</h3>
+                        <div class="category">${categoryVal}</div>
+                        <div class="stock-badge ${stockClass}">${stockText}</div>
+                        <div class="price">${formatPrice(price)}</div>
+                        <div class="actions">
+                            ${stock > 0 ? `
+                                <button onclick="addToCart('${id}')">🛒 Add</button>
+                                ${qty > 0 ? `<button class="btn-outline" onclick="removeFromCart('${id}')">Remove</button>` : ''}
+                            ` : `<button disabled style="opacity:0.5;background:#94a3b8;">Out of Stock</button>`}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const totalContainer = document.getElementById('cartTotalContainer');
+            const totalPrice = document.getElementById('cartTotalPrice');
+            const countEl = document.getElementById('cartItemCount');
+            const badge = document.getElementById('cartCount');
+
+            const cart = getCart();
+            const count = getCartCount();
+            badge.textContent = count;
+            countEl.textContent = `(${count} items)`;
+
+            if (cart.length === 0) {
+                container.innerHTML =
+                    `<div class="empty-state"><div class="icon">🛍️</div><h3>Your cart is empty</h3><p class="text-muted">Start adding some awesome products!</p></div>`;
+                totalContainer.style.display = 'none';
+                return;
+            }
+
+            totalContainer.style.display = 'block';
+            let html = '';
+            cart.forEach((item) => {
+                // Find product in allProducts (may not be loaded if on cart page)
+                const p = allProducts.find(pr => (pr.ID || pr.id) === item.productId);
+                if (!p) {
+                    html += `
+                        <div class="cart-item">
+                            <div class="info">
+                                <span style="font-size:1.6rem;">❓</span>
+                                <span class="name">Unknown Product</span>
+                                <span class="price">${formatPrice(item.price)}</span>
+                            </div>
+                            <div class="qty">
+                                <button onclick="updateCartQty('${item.productId}', -1)">−</button>
+                                <span>${item.qty}</span>
+                                <button onclick="updateCartQty('${item.productId}', 1)">+</button>
+                                <button class="btn-danger btn-sm" onclick="removeFromCart('${item.productId}')" style="margin-left:6px;">✕</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                const name = p.NAME || p.name;
+                const icon = p.ICON || p.icon || '📦';
+                html += `
+                    <div class="cart-item">
+                        <div class="info">
+                            <span style="font-size:1.6rem;">${icon}</span>
+                            <span class="name">${name}</span>
+                            <span class="price">${formatPrice(item.price)}</span>
+                        </div>
+                        <div class="qty">
+                            <button onclick="updateCartQty('${item.productId}', -1)">−</button>
+                            <span>${item.qty}</span>
+                            <button onclick="updateCartQty('${item.productId}', 1)">+</button>
+                            <button class="btn-danger btn-sm" onclick="removeFromCart('${item.productId}')" style="margin-left:6px;">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            totalPrice.textContent = formatPrice(getCartTotal());
+        }
+
+        // ─── ADMIN RENDER FUNCTIONS ───
+
+        async function renderAdminProducts() {
+            const tbody = document.getElementById('adminProductTableBody');
+            const products = await fetchProducts();
+            if (products.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No products yet.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = products.map((p, i) => {
+                const id = p.ID || p.id;
+                const name = p.NAME || p.name;
+                const category = p.CATEGORY || p.category;
+                const price = p.PRICE || p.price;
+                const stock = p.STOCK || p.stock;
+                const icon = p.ICON || p.icon || '📦';
+                return `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td><span class="inline-flex"><span>${icon}</span> ${name}</span></td>
+                        <td>${category}</td>
+                        <td>${formatPrice(price)}</td>
+                        <td>${stock}</td>
+                        <td>
+                            <button class="btn-danger btn-sm" onclick="adminDeleteProduct('${id}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function renderAdminOrders() {
+            const tbody = document.getElementById('adminOrderTableBody');
+            const token = sessionStorage.getItem('shopverse_token');
+            if (!token) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Please login as admin.</td></tr>`;
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/admin/orders`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch orders');
+                const orders = await res.json();
+                if (orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No orders yet.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = orders.map(o => {
+                    const statusBadge = o.status === 'completed' ? 'badge-success' : o.status === 'cancelled' ?
+                        'badge-danger' : 'badge-warning';
+                    return `
+                        <tr>
+                            <td><strong>#${o.id}</strong></td>
+                            <td>${o.user?.username || 'Unknown'}</td>
+                            <td>${o.items?.length || 0} item(s)</td>
+                            <td>${formatPrice(o.total)}</td>
+                            <td><span class="badge ${statusBadge}">${o.status || 'pending'}</span></td>
+                            <td>${new Date(o.created_at || o.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                tbody.innerHTML =
+                    `<tr><td colspan="6" class="text-center text-muted">Error loading orders: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function renderAdminUsers() {
+            const tbody = document.getElementById('adminUserTableBody');
+            const token = sessionStorage.getItem('shopverse_token');
+            if (!token) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Please login as admin.</td></tr>`;
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Failed to fetch users');
+                const users = await res.json();
+                if (users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No users.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = users.map((u, i) => `
+                    <tr>
+                        <td>${i+1}</td>
+                        <td>${u.username}</td>
+                        <td>${u.email}</td>
+                        <td>${new Date(u.joined).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML =
+                    `<tr><td colspan="4" class="text-center text-muted">Error loading users: ${err.message}</td></tr>`;
+            }
+        }
+
+        // ─── UPDATE UI ───
+        function updateUI() {
+            const user = getCurrentUser();
+            const greeting = document.getElementById('userGreeting');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const adminNav = document.getElementById('adminNavLink');
+
+            if (user) {
+                greeting.textContent = `👋 ${user.username}`;
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                if (user.username === 'admin') {
+                    adminNav.style.display = 'inline-block';
+                } else {
+                    adminNav.style.display = 'none';
+                }
+            } else {
+                greeting.textContent = '';
+                loginBtn.style.display = 'inline-block';
+                registerBtn.style.display = 'inline-block';
+                logoutBtn.style.display = 'none';
+                adminNav.style.display = 'none';
+            }
+
+            document.getElementById('cartCount').textContent = getCartCount();
+
+            const activePage = document.querySelector('.page.active-page');
+            if (activePage) {
+                const id = activePage.id;
+                if (id === 'page-home') renderProducts();
+                else if (id === 'page-cart') renderCart();
+                else if (id === 'page-admin') {
+                    renderAdminProducts();
+                    renderAdminOrders();
+                    renderAdminUsers();
+                }
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  CART OPERATIONS
+        // ════════════════════════════════════════════════════════════════
+
+        function addToCart(productId) {
+            const p = allProducts.find(pr => (pr.ID || pr.id) === productId);
+            if (!p) { showToast('Product not found!', 'error'); return; }
+            const stock = p.STOCK || p.stock || 0;
+            if (stock <= 0) { showToast('Out of stock!', 'error'); return; }
+
+            let cart = getCart();
+            const existing = cart.find(c => c.productId === productId);
+            if (existing) {
+                if (existing.qty >= stock) { showToast('Not enough stock!', 'warning'); return; }
+                existing.qty++;
+            } else {
+                cart.push({ productId, qty: 1, price: p.PRICE || p.price });
+            }
+            saveCart(cart);
+            renderCart();
+            updateUI();
+            showToast(`Added ${p.NAME || p.name} to cart!`, 'success');
+        }
+
+        function removeFromCart(productId) {
+            let cart = getCart();
+            cart = cart.filter(c => c.productId !== productId);
+            saveCart(cart);
+            renderCart();
+            updateUI();
+            showToast('Removed from cart.', 'info');
+        }
+
+        function updateCartQty(productId, delta) {
+            let cart = getCart();
+            const item = cart.find(c => c.productId === productId);
+            if (!item) return;
+            const p = allProducts.find(pr => (pr.ID || pr.id) === productId);
+            if (!p) { showToast('Product not found', 'error'); return; }
+            const newQty = item.qty + delta;
+            if (newQty <= 0) {
+                removeFromCart(productId);
+                return;
+            }
+            const stock = p.STOCK || p.stock || 0;
+            if (newQty > stock) { showToast('Not enough stock!', 'warning'); return; }
+            item.qty = newQty;
+            saveCart(cart);
+            renderCart();
+            updateUI();
+        }
+
+        function clearCart() {
+            const cart = getCart();
+            if (cart.length === 0) return;
+            saveCart([]);
+            renderCart();
+            updateUI();
+            showToast('Cart cleared.', 'info');
+        }
+
+        async function checkout() {
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Please login to checkout!', 'warning');
+                navigateTo('login');
+                return;
+            }
+            const cart = getCart();
+            if (cart.length === 0) {
+                showToast('Your cart is empty!', 'warning');
+                return;
+            }
+
+            const token = sessionStorage.getItem('shopverse_token');
+            if (!token) {
+                showToast('Please login again.', 'warning');
+                navigateTo('login');
+                return;
+            }
+
+            // Verify stock
+            for (const item of cart) {
+                const p = allProducts.find(pr => (pr.ID || pr.id) === item.productId);
+                if (!p) {
+                    showToast(`Product not found: ${item.productId}`, 'error');
+                    return;
+                }
+                const stock = p.STOCK || p.stock || 0;
+                if (stock < item.qty) {
+                    showToast(`Not enough stock for ${p.NAME || p.name}`, 'error');
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        items: cart.map(c => ({ productId: c.productId, qty: c.qty, price: c.price })),
+                        total: getCartTotal()
+                    })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Order failed');
+                }
+                const data = await res.json();
+                saveCart([]);
+                renderCart();
+                updateUI();
+                showToast(`🎉 Order placed! Order #${data.orderId}`, 'success');
+                navigateTo('home');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  ADMIN OPERATIONS
+        // ════════════════════════════════════════════════════════════════
+
+        async function adminDeleteProduct(productId) {
+            if (!confirm('Delete this product permanently?')) return;
+            const token = sessionStorage.getItem('shopverse_token');
+            if (!token) { showToast('Please login as admin.', 'error'); return; }
+            try {
+                const res = await fetch(`${API_BASE}/products/${productId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Delete failed');
+                showToast('Product deleted.', 'info');
+                // Also remove from cart
+                let cart = getCart();
+                cart = cart.filter(c => c.productId !== productId);
+                saveCart(cart);
+                renderAdminProducts();
+                renderProducts();
+                updateUI();
+            } catch (err) {
+                showToast('Error deleting product: ' + err.message, 'error');
+            }
+        }
+
+        async function adminAddProduct(e) {
+            e.preventDefault();
+            const token = sessionStorage.getItem('shopverse_token');
+            if (!token) { showToast('Please login as admin.', 'error'); return; }
+
+            const name = document.getElementById('prodName').value.trim();
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const stock = parseInt(document.getElementById('prodStock').value);
+            const description = document.getElementById('prodDesc').value.trim();
+            const icon = document.getElementById('prodIcon').value.trim() || '📦';
+
+            if (!name || !price || isNaN(stock) || stock < 0) {
+                showToast('Please fill all required fields correctly.', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, category, price, stock, description, icon })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Failed to add product');
+                }
+                document.getElementById('addProductForm').reset();
+                document.getElementById('prodIcon').value = '📦';
+                showToast(`✅ Product "${name}" added!`, 'success');
+                renderAdminProducts();
+                renderProducts();
+                updateUI();
+                switchAdminTab('products');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  AUTH
+        // ════════════════════════════════════════════════════════════════
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!identifier || !password) {
+                showToast('Please fill all fields.', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Invalid credentials');
+                }
+                const data = await res.json();
+                // Store token and user
+                sessionStorage.setItem('shopverse_token', data.token);
+                setCurrentUser(data.user);
+                document.getElementById('loginForm').reset();
+                showToast(`Welcome back, ${data.user.username}! 👋`, 'success');
+                navigateTo('home');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+
+            if (!username || !email || !password) {
+                showToast('Please fill all fields.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters.', 'error');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Registration failed');
+                }
+                const data = await res.json();
+                sessionStorage.setItem('shopverse_token', data.token);
+                setCurrentUser(data.user);
+                document.getElementById('registerForm').reset();
+                showToast(`🎉 Account created! Welcome ${username}!`, 'success');
+                navigateTo('home');
+            } catch (err) {
+                showToast(err.message, 'error');
+            }
+        }
+
+        function handleLogout() {
+            setCurrentUser(null);
+            sessionStorage.removeItem('shopverse_token');
+            showToast('Logged out.', 'info');
+            navigateTo('home');
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  NAVIGATION
+        // ════════════════════════════════════════════════════════════════
+
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active-page'));
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active-page');
+
+            document.querySelectorAll('.nav-links a[data-page]').forEach(el => {
+                el.classList.toggle('active-link', el.dataset.page === page);
+            });
+
+            if (page === 'home') renderProducts();
+            else if (page === 'cart') renderCart();
+            else if (page === 'admin') {
+                const user = getCurrentUser();
+                if (!user || user.username !== 'admin') {
+                    showToast('Admin access only.', 'error');
+                    navigateTo('home');
+                    return;
+                }
+                renderAdminProducts();
+                renderAdminOrders();
+                renderAdminUsers();
+            }
+
+            if ((page === 'login' || page === 'register') && getCurrentUser()) {
+                navigateTo('home');
+                return;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active-section'));
+            const target = document.getElementById('admin-' + tab);
+            if (target) target.classList.add('active-section');
+
+            document.querySelectorAll('.admin-tabs button').forEach(el => {
+                el.classList.toggle('active-tab', el.dataset.tab === tab);
+            });
+
+            if (tab === 'products') renderAdminProducts();
+            else if (tab === 'orders') renderAdminOrders();
+            else if (tab === 'users') renderAdminUsers();
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        //  EVENT BINDING
+        // ════════════════════════════════════════════════════════════════
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.querySelectorAll('.nav-links a[data-page]').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = el.dataset.page;
+                    if (page === 'admin') {
+                        const user = getCurrentUser();
+                        if (!user || user.username !== 'admin') {
+                            showToast('Admin access only.', 'error');
+                            return;
+                        }
+                    }
+                    navigateTo(page);
+                });
+            });
+
+            document.getElementById('switchToRegister').addEventListener('click', () => navigateTo('register'));
+            document.getElementById('switchToLogin').addEventListener('click', () => navigateTo('login'));
+
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+            document.getElementById('loginBtn').addEventListener('click', () => navigateTo('login'));
+            document.getElementById('registerBtn').addEventListener('click', () => navigateTo('register'));
+
+            document.getElementById('clearCartBtn').addEventListener('click', clearCart);
+            document.getElementById('checkoutBtn').addEventListener('click', checkout);
+
+            document.querySelectorAll('.admin-tabs button').forEach(el => {
+                el.addEventListener('click', () => switchAdminTab(el.dataset.tab));
+            });
+
+            document.getElementById('adminAddProductBtn').addEventListener('click', () => switchAdminTab('add-product'));
+            document.getElementById('addProductForm').addEventListener('submit', adminAddProduct);
+
+            document.getElementById('searchInput').addEventListener('input', renderProducts);
+            document.getElementById('categoryFilter').addEventListener('change', renderProducts);
+            document.getElementById('sortFilter').addEventListener('change', renderProducts);
+
+            // Load initial data
+            const user = getCurrentUser();
+            if (user) {
+                // If user exists, token might be there
+                if (!sessionStorage.getItem('shopverse_token')) {
+                    setCurrentUser(null);
+                }
+            }
+            updateUI();
+            navigateTo('home');
+        });
+
+        // Expose functions globally
+        window.addToCart = addToCart;
+        window.removeFromCart = removeFromCart;
+        window.updateCartQty = updateCartQty;
+        window.adminDeleteProduct = adminDeleteProduct;
+        window.navigateTo = navigateTo;
+        window.switchAdminTab = switchAdminTab;
+        window.clearCart = clearCart;
+        window.checkout = checkout;
+    </script>
+</body>
+</html>
